@@ -5,12 +5,19 @@ export class Particle {
         this.radius = 1;
         this.isTouch = false;
 
-        document.addEventListener('mousemove', this.handleMouseMove.bind(this));
+        /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent) ?
+        document.addEventListener('touchmove', this.handleTouch.bind(this)):
+        document.addEventListener('mousemove', this.handleMove.bind(this));
     }
 
-    handleMouseMove(event) {
-        this.mouseX = event.clientX;
-        this.mouseY = event.clientY;
+    handleMove(event) {
+        this.clientX = event.clientX;
+        this.clientY = event.clientY;
+    }
+
+    handleTouch(event) {
+        this.clientX = event.touches[0].clientX;
+        this.clientY = event.touches[0].clientY;
     }
 
     draw(ctx, speedX, speedY) {
@@ -19,13 +26,13 @@ export class Particle {
         ctx.fill();
 
         const distance = Math.sqrt(
-            Math.pow(this.mouseX - this.x, 2) + Math.pow(this.mouseY - this.y, 2)
+            Math.pow(this.clientX - this.x, 2) + Math.pow(this.clientY - this.y, 2)
         );
 
         if (distance < 25) {
             this.isTouch = true;
-            this.speedX = (this.mouseX - this.x) / 12 * Math.random();
-            this.speedY = (this.mouseY - this.y) / 12 * (Math.random() + 1);
+            this.speedX = (this.clientX - this.x) / 12 * Math.random();
+            this.speedY = (this.clientY - this.y) / 12 * (Math.random() + 1);
         } 
         
         if (this.isTouch) {
